@@ -8,6 +8,7 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     // Agregar atributos privados del Conjunto
     private Nodo actual;
     private Nodo raiz;
+    private int tamaño;
 
     private class Nodo {
         private Nodo padre;
@@ -26,36 +27,34 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     public ABB() {
         raiz = null;
         actual = null;
+        tamaño = 0;
     }
 
     public int cardinal() {
-        if(raiz == null){
-            return 0;
-        }
-        else{
-            actual = raiz;
-            int i = 1;
-            while(actual.nodoizquierdo != null){
-                actual = actual.nodoizquierdo;
-            }
-            while(actual.nododerecho != null){
-                actual = actual.nodoizquierdo;
-            }                
-        }
+        return tamaño;
     }
 
     public T minimo(){
-        throw new UnsupportedOperationException("No implementada aun");
+        actual = raiz;
+        while (actual.nodoizquierdo != null) {
+            actual = actual.nodoizquierdo;   
+        }
+        return actual.valor;
     }
 
     public T maximo(){
-        throw new UnsupportedOperationException("No implementada aun");
+        actual = raiz;
+        while (actual.nododerecho != null) {
+            actual = actual.nododerecho;   
+        }
+        return actual.valor;
     }
 
     public void insertar(T elem){
         if(raiz == null){
             raiz = new Nodo(elem);
             actual = raiz;
+            tamaño = 1;
         }
         else{
             actual = raiz;
@@ -66,6 +65,7 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
                         nuevo.padre = actual;
                         actual.nododerecho = nuevo;
                         actual = nuevo;
+                        tamaño += 1;
                     }
                     else{
                         actual = actual.nododerecho;
@@ -77,6 +77,7 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
                         nuevo.padre = actual;
                         actual.nodoizquierdo = nuevo;
                         actual = nuevo;
+                        tamaño += 1;
                     }
                     else{
                         actual = actual.nodoizquierdo;
@@ -113,11 +114,96 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     }
 
     public void eliminar(T elem){
-        throw new UnsupportedOperationException("No implementada aun");
+        actual = raiz;
+        int i = 0;
+        Nodo nodoempalme = raiz;
+
+        if (raiz.valor == elem) {
+            raiz = actual.nodoizquierdo;
+            nodoempalme = actual.nodoizquierdo;
+                while(nodoempalme.nododerecho != null){
+                    nodoempalme = nodoempalme.nododerecho;
+                }
+            raiz.padre = null;
+            actual.nododerecho.padre = nodoempalme;
+            nodoempalme.nododerecho = actual.nododerecho; 
+            tamaño -= 1;                      
+        }
+
+        else{
+        while (actual.valor != elem && i < tamaño) {
+            if (actual.valor.compareTo(elem) > 0) {
+                actual = actual.nodoizquierdo;
+                i += 1;                
+            }
+            if (actual.valor.compareTo(elem) < 0) {
+                actual = actual.nododerecho;
+                i += 1;                
+            }
+        }
+        if (i == tamaño && actual.valor != elem){;}
+        if (actual.nododerecho == null && actual.nodoizquierdo == null){
+            if(actual.padre.nododerecho == actual){
+                actual.padre.nododerecho = null;
+                tamaño -= 1;
+            }
+            else{
+                actual.padre.nodoizquierdo = null;
+                tamaño -= 1;
+            }
+        }
+        else{
+            tamaño -= 1;
+                if (actual.nodoizquierdo != null){
+                        nodoempalme = actual.nodoizquierdo;
+                    while(nodoempalme.nododerecho != null){
+                        nodoempalme = nodoempalme.nododerecho;
+                    }
+                    actual.nodoizquierdo.padre = actual.padre;
+                    if (actual.padre.nododerecho == actual) {
+                    actual.padre.nododerecho = actual.nodoizquierdo;  
+                    } 
+                    if (actual.padre.nodoizquierdo == actual) {
+                    actual.padre.nodoizquierdo = actual.nodoizquierdo;
+                    }
+                    actual.nododerecho.padre = nodoempalme;
+                    nodoempalme.nododerecho = actual.nododerecho;
+                }
+                if (actual.nodoizquierdo == null) {
+                    actual.nododerecho.padre = actual.padre;
+                    if (actual.padre.nododerecho == actual) {
+                    actual.padre.nododerecho = actual.nododerecho;  
+                    } 
+                    if (actual.padre.nodoizquierdo == actual) {
+                    actual.padre.nodoizquierdo = actual.nodoizquierdo;
+                    }
+                }
+            }
+        }
     }
 
     public String toString(){
-        throw new UnsupportedOperationException("No implementada aun");
+        String listaStr = "{";
+        actual = raiz;
+        Nodo previo = raiz;
+        int i = 0;
+        while (actual.nodoizquierdo != null) {
+            actual = actual.nodoizquierdo;
+            previo = actual;            
+        }
+        while (i < tamaño) {
+            listaStr = listaStr + actual.valor.toString() + ", ";
+            if (actual.nododerecho == null && actual.nodoizquierdo == null){
+               actual = actual.padre; 
+            }
+            else if (actual.nodoizquierdo == previo) {
+                previo = actual;
+                actual = actual.nododerecho;
+            }
+
+        
+        }
+        return listaStr;
     }
 
     private class ABB_Iterador implements Iterador<T> {
