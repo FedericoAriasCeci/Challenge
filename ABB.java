@@ -201,13 +201,17 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
                     }
                 listaStr = listaStr + actual.valor.toString() + ", ";
                 i +=1 ;
-                    if (actual.padre == tope) {
-                        tope = actual;
-                    }
-                    else{
-                        tope = actual.padre;
-                    }    
+                tope = actual.padre;    
                 }
+            if(tope == actual){
+                listaStr = listaStr + actual.valor.toString() + ", ";
+                tope = actual.padre;
+                listaStr = listaStr + tope.valor.toString() + ", ";
+            }
+            else if(tope.nododerecho == null){
+                listaStr = listaStr + tope.valor.toString() + ", ";
+                tope = tope.padre;
+            }
             else{
                 while(tope.valor.compareTo(actual.valor) < 0){
                     actual = tope;
@@ -215,7 +219,6 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
                     actual = actual.padre;
                     i += 1;
                 }
-                tope = actual;
             }
         }           
         listaStr = listaStr + actual.valor.toString() + ", ";
