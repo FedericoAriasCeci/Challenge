@@ -212,14 +212,6 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
                 listaStr = listaStr + tope.valor.toString() + ", ";
                 tope = tope.padre;
             }
-            else{
-                while(tope.valor.compareTo(actual.valor) < 0){
-                    actual = tope;
-                    listaStr = listaStr + actual.valor.toString() + ", ";
-                    actual = actual.padre;
-                    i += 1;
-                }
-            }
         }           
         listaStr = listaStr + actual.valor.toString() + ", ";
         return listaStr;
