@@ -185,24 +185,40 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     public String toString(){
         String listaStr = "{";
         actual = raiz;
-        Nodo previo = raiz;
+        Nodo tope = raiz;
         int i = 0;
-        while (actual.nodoizquierdo != null) {
-            actual = actual.nodoizquierdo;
-            previo = actual;            
-        }
-        while (i < tamaño) {
-            listaStr = listaStr + actual.valor.toString() + ", ";
-            if (actual.nododerecho == null && actual.nodoizquierdo == null){
-               actual = actual.padre; 
-            }
-            else if (actual.nodoizquierdo == previo) {
-                previo = actual;
-                actual = actual.nododerecho;
-            }
 
-        
-        }
+        while (actual.nodoizquierdo != null) {
+            actual = actual.nodoizquierdo;   
+            tope = tope.nodoizquierdo;
+        }        
+
+        while (i < tamaño) {
+            if (tope.nododerecho != null) {
+                actual = tope.nododerecho;
+                while (actual.nodoizquierdo != null) {
+                        actual = actual.nodoizquierdo;
+                    }
+                listaStr = listaStr + actual.valor.toString() + ", ";
+                i +=1 ;
+                    if (actual.padre == tope) {
+                        tope = actual;
+                    }
+                    else{
+                        tope = actual.padre;
+                    }    
+                }
+            else{
+                while(tope.valor.compareTo(actual.valor) < 0){
+                    actual = tope;
+                    listaStr = listaStr + actual.valor.toString() + ", ";
+                    actual = actual.padre;
+                    i += 1;
+                }
+                tope = actual;
+            }
+        }           
+        listaStr = listaStr + actual.valor.toString() + ", ";
         return listaStr;
     }
 
